@@ -55,9 +55,9 @@ pipeline{
                 always{
                     script{
                         emailext (
-                            mail to: "hudaabbasi71@gmail.com",
-                            subject: "Pipeline Build update",
-                            body: "Pipeline Result: ${currentBuild.result}"
+                            subject: "Pipeline Build Result",
+                            body: "The pipeline has completed. Result: ${currentBuild.result}",
+                            to: "hudaabbasi71@gmail.com", 
                             attachLog: true
                         )
                     }
@@ -93,9 +93,9 @@ pipeline{
                 always{
                     script{
                         emailext (
-                            mail to: "hudaabbasi71@gmail.com",
-                            subject: "Pipeline Test update",
-                            body: "Pipeline Result: ${currentTest.result}"
+                            subject: "Pipeline Integration Test Result",
+                            body: "The pipeline has completed. Result: ${currentTest.result}",
+                            to: "hudaabbasi71@gmail.com",  
                             attachLog: true
                         )                       
                     }
