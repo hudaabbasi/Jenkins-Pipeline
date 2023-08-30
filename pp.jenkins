@@ -1,41 +1,108 @@
 pipeline{
     agent any
-    environment{
-        DIRECTORY_PATH = ""
-        TESTING_ENVIORNMENT = ""
-        PRODUCTION_ENVIORNMENT = "Apache"
-    }
+
     stages{
         stage('Build'){
             steps{
-                echo "Fetch the source code from the directory path specified by the enviornment variable"
-                echo "Compile the code and generate any necessary artifacts"
+                echo "Build Stage....."
+                script {
+                    // Build code using Maven
+                    sh 'mvn clean package'
+                }
+                
             }
         }
-        stage('Test'){
+        stage('Unit and Integration Tests'){
             steps{
-                echo "Unit Testing is complete"
-                echo "Integration Testing is complete"
+                echo "Unit and Integration Testing..."
+                script {
+                    // Run unit tests using JUnit
+                    sh 'mvn test'
+                    
+                    // Run integration tests using TestNG
+                    sh 'mvn integration-test'
+                }
+                
             }
         }
-        stage('Code Quality Check'){
+        stage('Code Analysis'){
             steps{
                 echo "Check the quality of the code"
+                script {
+                    // Integrate SonarQube analysis
+                    withSonarQubeEnv('SonarQubeServer') {
+                        sh 'mvn sonar:sonar'
+                    }
+                }
             }
         }
-        stage('Deploy'){
+        stage('Security Scan'){
             steps{
-                echo "Deploy the application to a testing enviornment specified by the enviornment variable"
+                echo "Security Scan...."
+                script {
+                    try{
+                        // Run security scans using OWASP ZAP
+                        sh 'owasp-zap scan -t http://your-app-url'
+                        currentBuild.result = 'Successful'
+                    }
+                    catch (Exception Exception){
+                        currentBuild.result = 'Failed'
+                        throw Exception
+                    }
+                }
+            }
+            post{
+                always{
+                    mail to: "hudaabbasi71@gmail.com",
+                    subject: "Pipeline Build update",
+                    body: "Pipeline Result: ${currentBuild.result}"
+                    attachLog: true
+                }
+                
             }
         }
-        stage('Approval'){
+        stage('Deploy to Staging'){
             steps{
-                sleep time: 10, unit: 'SECONDS'
+                echo "Deployed to staging"
+                script {
+                    // Use AWS CodeDeploy to deploy to staging environment
+                    sh 'aws deploy create-deployment --application-name YourApp --deployment-group-name StagingGroup --s3-location s3://your-bucket/your-artifact'
+                }
             }
         }
-        stage('Deploy to Production'){
+        stage('Integration Tests on Staging'){
             steps{
-                echo "Deploy code to $PRODUCTION_ENVIORNMENT"
+                echo "Running Integration Tests on Staging"
+                script {
+                    try{
+                        // Run integration tests on the staging environment
+                        sh 'mvn integration-test -Denv=staging'
+                        currentTest.result = 'SUCCESSFUL'
+                    }
+                    catch (Exception Exception){
+                        currentTest.result = 'FAILED'
+                        throw Exception
+                    }
+                    
+                }
+            post{
+                always{
+                    mail to: "hudaabbasi71@gmail.com",
+                    subject: "Pipeline Test update",
+                    body: "Pipeline Result: ${currentTest.result}"
+                    attachLog: true
+                }
+                
+            }
+            }
+        }
+        stage('Deploy to Production') {
+            steps {
+                echo "Deploy to Production"
+                script {
+                    // Use AWS CodeDeploy to deploy to production environment
+                    sh 'aws deploy create-deployment --application-name YourApp --deployment-group-name ProductionGroup --s3-location s3://your-bucket/your-artifact'
+                }
             }
         }
     }
