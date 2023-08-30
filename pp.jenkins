@@ -9,9 +9,9 @@ pipeline{
                     // Build code using Maven
                     sh 'mvn clean package'
                 }
-                
             }
         }
+        
         stage('Unit and Integration Tests'){
             steps{
                 echo "Unit and Integration Testing..."
@@ -22,20 +22,21 @@ pipeline{
                     // Run integration tests using TestNG
                     sh 'mvn integration-test'
                 }
-                
             }
         }
+        
         stage('Code Analysis'){
             steps{
                 echo "Check the quality of the code"
                 script {
                     // Integrate SonarQube analysis
                     withSonarQubeEnv('SonarQubeServer') {
-                       sh 'mvn sonar:sonar'
+                        sh 'mvn sonar:sonar'
                     }
                 }
             }
         }
+        
         stage('Security Scan'){
             steps{
                 echo "Security Scan...."
@@ -43,28 +44,29 @@ pipeline{
                     try{
                         // Run security scans using OWASP ZAP
                         //sh 'owasp-zap scan -t http://your-app-url'
-                        currentBuild.result = 'Successful'
+                        currentBuild.result = 'SUCCESS'
                     }
-                    catch (Exception Exception){
-                        currentBuild.result = 'Failed'
-                        throw Exception
+                    catch (Exception e){
+                        currentBuild.result = 'FAILURE'
+                        throw e
                     }
                 }
             }
+            
             post{
                 always{
                     script{
                         emailext (
-                            subject: "Pipeline Build Result",
+                            subject: "Pipeline Security Scan Result",
                             body: "The pipeline has completed. Result: ${currentBuild.result}",
-                            to: "hudaabbasi71@gmail.com", 
+                            to: "hudaabbasi71@gmail.com",
                             attachLog: true
                         )
                     }
                 }
-                
             }
         }
+        
         stage('Deploy to Staging'){
             steps{
                 echo "Deployed to staging"
@@ -74,6 +76,7 @@ pipeline{
                 }
             }
         }
+        
         stage('Integration Tests on Staging'){
             steps{
                 echo "Running Integration Tests on Staging"
@@ -83,27 +86,27 @@ pipeline{
                         sh 'mvn integration-test -Denv=staging'
                         currentTest.result = 'SUCCESSFUL'
                     }
-                    catch (Exception Exception){
+                    catch (Exception e){
                         currentTest.result = 'FAILED'
-                        throw Exception
+                        throw e
                     }
-                    
                 }
+            }
+            
             post{
                 always{
                     script{
                         emailext (
                             subject: "Pipeline Integration Test Result",
                             body: "The pipeline has completed. Result: ${currentTest.result}",
-                            to: "hudaabbasi71@gmail.com",  
+                            to: "hudaabbasi71@gmail.com",
                             attachLog: true
                         )                       
                     }
                 }
-                
-            }
             }
         }
+        
         stage('Deploy to Production') {
             steps {
                 echo "Deploy to Production"
@@ -114,5 +117,4 @@ pipeline{
             }
         }
     }
-    
 }
