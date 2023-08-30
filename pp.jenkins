@@ -53,10 +53,14 @@ pipeline{
             }
             post{
                 always{
-                    mail to: "hudaabbasi71@gmail.com",
-                    subject: "Pipeline Build update",
-                    body: "Pipeline Result: ${currentBuild.result}"
-                    attachLog: true
+                    script{
+                        emailext (
+                            mail to: "hudaabbasi71@gmail.com",
+                            subject: "Pipeline Build update",
+                            body: "Pipeline Result: ${currentBuild.result}"
+                            attachLog: true
+                        )
+                    }
                 }
                 
             }
@@ -87,10 +91,14 @@ pipeline{
                 }
             post{
                 always{
-                    mail to: "hudaabbasi71@gmail.com",
-                    subject: "Pipeline Test update",
-                    body: "Pipeline Result: ${currentTest.result}"
-                    attachLog: true
+                    script{
+                        emailext (
+                            mail to: "hudaabbasi71@gmail.com",
+                            subject: "Pipeline Test update",
+                            body: "Pipeline Result: ${currentTest.result}"
+                            attachLog: true
+                        )                       
+                    }
                 }
                 
             }
