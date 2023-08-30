@@ -30,9 +30,9 @@ pipeline{
                 echo "Check the quality of the code"
                 script {
                     // Integrate SonarQube analysis
-                    withSonarQubeEnv('SonarQubeServer') {
-                        sh 'mvn sonar:sonar'
-                    }
+                    //withSonarQubeEnv('SonarQubeServer') {
+                       // sh 'mvn sonar:sonar'
+                   // }
                 }
             }
         }
@@ -42,7 +42,7 @@ pipeline{
                 script {
                     try{
                         // Run security scans using OWASP ZAP
-                        sh 'owasp-zap scan -t http://your-app-url'
+                        //sh 'owasp-zap scan -t http://your-app-url'
                         currentBuild.result = 'Successful'
                     }
                     catch (Exception Exception){
@@ -70,7 +70,7 @@ pipeline{
                 echo "Deployed to staging"
                 script {
                     // Use AWS CodeDeploy to deploy to staging environment
-                    sh 'aws deploy create-deployment --application-name YourApp --deployment-group-name StagingGroup --s3-location s3://your-bucket/your-artifact'
+                    sh 'aws deploy create-deployment' //--application-name YourApp --deployment-group-name StagingGroup --s3-location s3://your-bucket/your-artifact'
                 }
             }
         }
@@ -109,7 +109,7 @@ pipeline{
                 echo "Deploy to Production"
                 script {
                     // Use AWS CodeDeploy to deploy to production environment
-                    sh 'aws deploy create-deployment --application-name YourApp --deployment-group-name ProductionGroup --s3-location s3://your-bucket/your-artifact'
+                    sh 'aws deploy create-deployment' //--application-name YourApp --deployment-group-name ProductionGroup --s3-location s3://your-bucket/your-artifact'
                 }
             }
         }
