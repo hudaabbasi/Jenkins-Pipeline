@@ -30,9 +30,9 @@ pipeline{
                 echo "Check the quality of the code"
                 script {
                     // Integrate SonarQube analysis
-                    //withSonarQubeEnv('SonarQubeServer') {
-                       // sh 'mvn sonar:sonar'
-                   // }
+                    withSonarQubeEnv('SonarQubeServer') {
+                       sh 'mvn sonar:sonar'
+                    }
                 }
             }
         }
