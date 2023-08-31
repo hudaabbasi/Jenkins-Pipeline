@@ -61,10 +61,10 @@ pipeline{
                 script {
                     try{
                         
-                        currentTest.result = 'SUCCESSFUL'
+                        currentBuild.result = 'SUCCESSFUL'
                     }
                     catch (Exception Exception){
-                        currentTest.result = 'FAILED'
+                        currentBuild.result = 'FAILED'
                         throw Exception
                     }
                     
@@ -74,7 +74,7 @@ pipeline{
                     script{
                         emailext (
                             subject: "Pipeline Integration Test Result",
-                            body: "The pipeline has completed. Result: ${currentTest.result}",
+                            body: "The pipeline has completed. Result: ${currentBuild.result}",
                             to: "hudaabbasi71@gmail.com",  
                             attachLog: true
                         )                       
