@@ -30,19 +30,7 @@ pipeline{
                 always {
                     script {
                         def status = currentBuild.resultIsBetterOrEqualTo('SUCCESS') ? 'Successful' : 'Failed'
-                        emailext (
-                        subject: "Pipeline Stage Result: ${status}",
-                        body: "The stage has completed. Result: ${status}",
-                        to: "hudaabbasi71@gmail.com",
-                        mimeType: 'text/html', // Set content type
-                        attachLog: true,
-                        // SMTP server configuration
-                        smtpServer: "smtp.gmail.com",
-                        smtpPort: "465",
-                        smtpAuth: true,
-                        smtpUser: "hudaabbasi71@gmail.com",
-                        smtpPassword: "ndamneaxrdbjeoxz"
-                        )
+                        emailext attachLog: true, body: '"The stage has completed. Result: ${status}",', subject: 'Status Update', to: 'hudaabbasi71@gmail.com'
                     }
                 }
             }
