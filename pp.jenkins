@@ -55,35 +55,7 @@ pipeline{
                 
             }
         }
-        stage('Integration Tests on Staging'){
-            steps{
-                echo "Running Integration Tests on Staging using Maven"
-                script {
-                    try{
-                        
-                        currentBuild.result = 'SUCCESS'
-                    }
-                    catch (Exception ex){
-                        currentBuild.result = 'FAILURE'
-                        throw ex
-                    }
-                    
-                }
-            post{
-                always{
-                    script{
-                        emailext (
-                            subject: "Pipeline Integration Test Result",
-                            body: "The pipeline has completed. Result: ${currentBuild.result}",
-                            to: "hudaabbasi71@gmail.com",  
-                            attachLog: true
-                        )                       
-                    }
-                }
-                
-            }
-            }
-        }
+        
         stage('Deploy to Production') {
             steps {
                 echo "Deploy to Production using AWS CodeDeploy"
