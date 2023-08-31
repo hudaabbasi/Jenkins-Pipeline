@@ -27,26 +27,26 @@ pipeline{
                 
             }
             post {
-    always {
-        script {
-            def status = currentBuild.resultIsBetterOrEqualTo('SUCCESS') ? 'Successful' : 'Failed'
-            emailext (
-                subject: "Pipeline Stage Result: ${status}",
-                body: "The stage has completed. Result: ${status}",
-                to: "hudaabbasi71@gmail.com",
-                mimeType: 'text/html', // Set content type
-                attachLog: true,
-                // SMTP server configuration
-                smtpServer: "smtp.gmail.com.com",
-                smtpPort: "465",
-                smtpAuth: true,
-                smtpUser: "hudaabbasi71@gmail.com",
-                smtpPassword: "ndamneaxrdbjeoxz"
-            )
-        }
-    }
-}
-
+                always {
+                    script {
+                        def status = currentBuild.resultIsBetterOrEqualTo('SUCCESS') ? 'Successful' : 'Failed'
+                        emailext (
+                        subject: "Pipeline Stage Result: ${status}",
+                        body: "The stage has completed. Result: ${status}",
+                        to: "hudaabbasi71@gmail.com",
+                        mimeType: 'text/html', // Set content type
+                        attachLog: true,
+                        // SMTP server configuration
+                        smtpServer: "smtp.gmail.com",
+                        smtpPort: "465",
+                        smtpAuth: true,
+                        smtpUser: "hudaabbasi71@gmail.com",
+                        smtpPassword: "ndamneaxrdbjeoxz"
+                        )
+                    }
+                }
+            }
+        
         }
         stage('Deploy to Staging'){
             steps{
@@ -54,41 +54,11 @@ pipeline{
                 
             }
         }
-        stage('Integration Tests on Staging'){
-            steps{
-                echo "Running Integration Tests on Staging using Maven"
-                script {
-                    try{
-                        
-                        currentBuild.result = 'SUCCESS'
-                    }
-                    catch (Exception ex){
-                        currentBuild.result = 'FAILURE'
-                        throw ex
-                    }
-                    
-                }
-            post{
-                always{
-                    script{
-                        emailext (
-                            subject: "Pipeline Integration Test Result",
-                            body: "The pipeline has completed. Result: ${currentBuild.result}",
-                            to: "hudaabbasi71@gmail.com",  
-                            attachLog: true
-                        )                       
-                    }
-                }
-                
-            }
-            }
-        }
         stage('Deploy to Production') {
             steps {
                 echo "Deploy to Production using AWS CodeDeploy"
                 
             }
-        }
+        }    
     }
-    
-} 
+}
