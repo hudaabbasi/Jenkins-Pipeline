@@ -27,11 +27,11 @@ pipeline{
                 script {
                     try{
 
-                        currentBuild.result = 'Successful'
+                        currentBuild.result = 'SUCCESS'
                     }
-                    catch (Exception Exception){
-                        currentBuild.result = 'Failed'
-                        throw Exception
+                    catch (Exception ex){
+                        currentBuild.result = 'FAILURE'
+                        throw ex
                     }
                 }
             }
@@ -61,11 +61,11 @@ pipeline{
                 script {
                     try{
                         
-                        currentBuild.result = 'SUCCESSFUL'
+                        currentBuild.result = 'SUCCESS'
                     }
-                    catch (Exception Exception){
-                        currentBuild.result = 'FAILED'
-                        throw Exception
+                    catch (Exception ex){
+                        currentBuild.result = 'FAILURE'
+                        throw ex
                     }
                     
                 }
@@ -92,4 +92,4 @@ pipeline{
         }
     }
     
-}
+} 
