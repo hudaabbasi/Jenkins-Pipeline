@@ -38,10 +38,23 @@ pipeline{
         }
         stage('Deploy to Staging'){
             steps{
-                echo "Deployed to staging Enviornment using AWS CodeDeploy"
-                
+                echo "Deployed to staging Enviornment using AWS CodeDeploy"         
+            }
+            post {
+                always {
+                    script {
+                        def status = currentBuild.resultIsBetterOrEqualTo('SUCCESS') ? 'Successful' : 'Failed'
+                        emailext attachLog: true, body: '"The stage has completed. Result: ${status}",', subject: 'Status Update', to: 'hudaabbasi71@gmail.com'
+                    }
+                }
             }
         }
+        stage('Integration Tests on Staging') {
+            steps {
+                echo "Run Integration tests on staging using maven"
+                
+            }
+        }    
         stage('Deploy to Production') {
             steps {
                 echo "Deploy to Production using AWS CodeDeploy"
