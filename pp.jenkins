@@ -10,7 +10,7 @@ pipeline{
         }
         stage('Unit and Integration Tests'){
             steps{
-                echo "Unit and Integration Testing...using Maven Integration and Testing tools."
+                echo "Unit and Integration Testing...using Maven Integration and Testing Tools."
                 
                 
             }
